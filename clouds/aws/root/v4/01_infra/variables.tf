@@ -19,7 +19,7 @@ variable "tags" {
 }
 
 variable "domain_name" {
-  description = "An existing domain name maped to a Route 53 Hosted Zone"
+  description = "An existing domain name mapped to a Route 53 Hosted Zone"
   type        = string
   validation {
     condition     = trim(var.domain_name, " ") != ""
@@ -45,12 +45,12 @@ variable "hosted_zone_type" {
 #https://docs.cloudbees.com/docs/cloudbees-common/latest/supported-platforms/cloudbees-ci-cloud
 variable "k8s_version" {
   description = "Kubernetes version to use for the EKS cluster. Supported versions are 1.23 and 1.24."
-  default     = "1.24"
+  default     = "1.27"
   type        = string
 
   #https://docs.cloudbees.com/docs/cloudbees-common/latest/supported-platforms/cloudbees-ci-cloud#_kubernetes
   validation {
-    condition     = contains(["1.23", "1.24", "1.25"], var.k8s_version)
+    condition     = contains(["1.25", "1.26", "1.27"], var.k8s_version)
     error_message = "Provided Kubernetes version is not supported by EKS and/or CloudBees."
   }
 }
@@ -60,11 +60,11 @@ variable "k8s_instance_types" {
   type        = map(list(string))
   default = {
     # Not Scalable
-    "k8s-apps" = ["m5.8xlarge"]
+    "k8s-apps" = ["m6.8xlarge"]
     # Scalable
-    "cb-apps"    = ["m5d.4xlarge"] #Use Md5 https://aws.amazon.com/about-aws/whats-new/2018/06/introducing-amazon-ec2-m5d-instances/
-    "agent"      = ["m5.2xlarge"]
-    "agent-spot" = ["m5.2xlarge"]
+    "cb-apps"    = ["m6a.4xlarge"] #Use Md5 https://aws.amazon.com/about-aws/whats-new/2018/06/introducing-amazon-ec2-m5d-instances/
+    "agent"      = ["m6a.2xlarge"]
+    "agent-spot" = ["m6a.2xlarge"]
   }
 }
 
@@ -153,6 +153,12 @@ variable "vpc_id" {
   description = "Existing VPC ID. If not provided, a new VPC will be created."
   type        = string
   default     = ""
+}
+
+variable "vpc_cidr" {
+  description = "CIDR for the existin VPC"
+  type = string
+  default = ""
 }
 
 variable "private_subnets_ids" {

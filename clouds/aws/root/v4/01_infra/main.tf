@@ -131,8 +131,10 @@ module "vpc" {
   # Manage so we can name
   manage_default_network_acl    = true
   default_network_acl_tags      = { Name = "${local.vpc_name}-default" }
+
   manage_default_route_table    = true
   default_route_table_tags      = { Name = "${local.vpc_name}-default" }
+
   manage_default_security_group = true
   default_security_group_tags   = { Name = "${local.vpc_name}-default" }
 
@@ -147,7 +149,6 @@ module "vpc" {
   }
 
   tags = var.tags
-
 }
 
 #https://docs.cloudbees.com/docs/cloudbees-common/latest/supported-platforms/cloudbees-ci-cloud#_amazon_elastic_file_system_amazon_efs
@@ -326,7 +327,7 @@ data "aws_iam_policy_document" "managed_ng_assume_role_policy" {
 }
 
 resource "aws_iam_role" "managed_ng" {
-  name                  = "managed-node-role"
+  name                  = "${local.name}-managed-node-role"
   description           = "EKS Managed Node group IAM Role"
   assume_role_policy    = data.aws_iam_policy_document.managed_ng_assume_role_policy.json
   path                  = "/"
@@ -369,7 +370,7 @@ resource "aws_iam_role" "managed_ng" {
 }
 
 resource "aws_iam_instance_profile" "managed_ng" {
-  name = "managed-node-instance-profile-ci"
+  name = "${local.name}-managed-node-instance-profile-ci"
   role = aws_iam_role.managed_ng.name
   path = "/"
 
